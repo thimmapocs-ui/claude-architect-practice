@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude Architect Practice — Free Community Question Sets</title>
+  <meta name="description" content="Free, original practice questions for the Claude Certified Architect – Foundations exam. Scenario-based, with explanations for every option.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="#" class="brand" id="homeLink">Claude Architect Practice</a>
+    <span class="tag">Free · Community · Unofficial</span>
+  </header>
+  <main id="app" aria-live="polite"></main>
+  <footer class="foot">
+    Original practice questions written for study. Not affiliated with or endorsed by Anthropic,
+    and not real exam content. Check answers against the official documentation at
+    <a href="https://docs.claude.com" target="_blank" rel="noopener">docs.claude.com</a>.
+  </footer>
+
+  <!-- Question sets: each file pushes one set onto window.QUESTION_SETS -->
+  <script src="sets/set-01-agent-sdk.js"></script>
+  <script src="sets/set-02-claude-code-team.js"></script>
+  <script src="sets/set-03-ci-cd.js"></script>
+  <script src="sets/set-04-multi-agent-research.js"></script>
+  <script src="sets/set-05-reliability.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
