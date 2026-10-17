@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://thimmapocs-ui.github.io/claude-architect-practice/sitemap.xml
