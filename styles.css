@@ -57,3 +57,54 @@ table { width: 100%; border-collapse: collapse; font-size: .92rem; }
 td, th { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--border); }
 .refs { font-size: .85rem; color: var(--muted); }
 select { padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--card); color: var(--text); }
+
+/* ---- navigation & layout ---- */
+.skip { position: absolute; left: -999px; top: 0; background: var(--accent); color: #fff; padding: 8px 12px; z-index: 10; }
+.skip:focus { left: 8px; top: 8px; }
+.topbar { flex-wrap: wrap; }
+.nav { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-left: auto; font-size: .9rem; }
+.nav a { text-decoration: none; color: var(--muted); padding: 2px 0; border-bottom: 2px solid transparent; }
+.nav a:hover, .nav a.active { color: var(--text); border-bottom-color: var(--accent); }
+.footgrid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 12px; }
+.foot a { color: var(--accent); }
+.small { font-size: .85rem; }
+h3 { font-size: 1rem; margin: 6px 0; }
+
+/* ---- landing ---- */
+.hero { padding: 28px 0 8px; }
+.hero h1 { font-size: 2rem; line-height: 1.2; }
+.lead { font-size: 1.1rem; color: var(--muted); max-width: 640px; }
+a.btn { text-decoration: none; display: inline-block; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 22px 0; }
+.stats div { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
+.stats b { display: block; font-size: 1.6rem; color: var(--accent); }
+.stats span { font-size: .8rem; color: var(--muted); }
+.dcard, .tcard { text-decoration: none; color: var(--text); display: block; }
+.dcard:hover, .tcard:hover { border-color: var(--accent); }
+
+/* ---- study pages ---- */
+details.card summary { cursor: pointer; }
+details.card ul { padding-left: 20px; }
+.cheats { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.cheat { margin: 0; }
+.cheat p { margin: 4px 0; }
+pre { background: var(--accent-soft); padding: 10px; border-radius: 8px; overflow-x: auto; font-size: .82rem; margin: 6px 0 0; }
+.ap .why { margin: 6px 0 2px; }
+.ap .fix { margin: 2px 0; color: var(--ok); }
+
+/* ---- flashcards ---- */
+.flash { display: flex; flex-direction: column; justify-content: center; gap: 12px; width: 100%; min-height: 220px; margin: 16px 0; padding: 24px; text-align: left; font: inherit; color: var(--text); background: var(--card); border: 2px solid var(--border); border-radius: 14px; cursor: pointer; }
+.flash.flipped { border-color: var(--ok); background: var(--ok-soft); }
+.ftext { font-size: 1.25rem; }
+
+/* ---- timer ---- */
+.timer { font-variant-numeric: tabular-nums; font-weight: 700; padding: 4px 10px; border-radius: 8px; background: var(--accent-soft); }
+.timer.low { background: var(--bad-soft); color: var(--bad); }
+
+@media print {
+  .topbar, .foot, .noprint, .skip, .nav { display: none !important; }
+  body { background: #fff; color: #000; }
+  .card { break-inside: avoid; border-color: #bbb; }
+  .cheats { grid-template-columns: repeat(2, 1fr); }
+  h2 { break-after: avoid; }
+}
