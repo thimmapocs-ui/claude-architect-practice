@@ -20,13 +20,15 @@ answers are wrong.
 - Pure static HTML/CSS/JS. You can open `index.html` directly from disk.
 
 ## Study tools
-- **Landing page** with navigation, stats and domain cards
-- **Quiz**: 8 sets, practice or exam mode
-- **Mock exam**: timed, 30 or 60 questions drawn by domain weight, with a per-domain breakdown
-- **Flashcards**: flip cards, domain filter, shuffle, keyboard control (Space, arrows)
-- **Cheat sheet**: one-page reference per domain, printable
-- **Anti-patterns**: common wrong-answer habits and better defaults
-- **Study guide** and **Overview** with a 6-week plan
+- **Dashboard**: readiness estimate weighted by exam domain, mastery per domain, day streak and a daily mission list. Everything is computed from your own answers.
+- **Weak-spot Trainer**: builds a session from questions you missed, then unseen ones, then your weakest correct answers
+- **Daily 5**: five questions that change each day
+- **Recall Deck**: flashcards on a spaced schedule (1, 3, 7, 14 days) with Again / Got it
+- **Code Clinic**: click the faulty line in 10 config and code snippets (hooks, loops, schemas, MCP config, CI)
+- **Full simulation**: timed, 30 or 60 questions drawn by domain weight
+- **Quiz sets**: 8 sets, practice or exam mode
+- **Study guide**, **Field notes** (printable), **Pitfalls**, and an interactive **study plan**, with a "Salesforce lens" note per domain
+- **Search** across everything (press `/` or Ctrl/Cmd+K), and export/import of your progress as JSON
 
 Exam facts (question count, pass mark, domain weights) are community-reported and unofficial. Claude Code details follow https://code.claude.com/docs.
 
