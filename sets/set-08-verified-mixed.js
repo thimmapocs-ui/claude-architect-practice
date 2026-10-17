@@ -16,7 +16,7 @@
 
   (window.QUESTION_SETS = window.QUESTION_SETS || []).push({
     id: 'set-08-verified-mixed',
-    title: 'Set 8 · Mixed, checked against the Claude Code docs',
+    title: 'Set 8 · Mixed, checked against the Claude Code docs · Practice mode',
     description: 'Loop control, hooks, skills, subagents, headless CI, schemas and context. Claude Code items follow the current official docs.',
     questions: [
       q(A, 'Your agent loop stops whenever the reply contains "I have completed the task." Some runs stop mid-task and others never stop. What is the correct fix?', [
