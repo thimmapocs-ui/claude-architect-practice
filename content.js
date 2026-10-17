@@ -184,7 +184,7 @@ window.CCA_CONTENT = (function () {
     X: 'Long case histories: pin a case-facts block (case id, account, status, SLA dates) and trim API responses to the fields the agent needs.'
   };
 
-  // Code Clinic: click the line that is wrong. `bug` is the 0-based index of that line.
+  // Fix the Code: click the line that is wrong. `bug` is the 0-based index of that line.
   const clinic = [
     { d: 'C', title: 'A guard hook that does not guard', lang: 'bash',
       lines: ['#!/bin/bash', 'CMD=$(jq -r \'.tool_input.command\')', 'if echo "$CMD" | grep -q "rm -rf"; then', '  echo "blocked: destructive command" >&2', '  exit 1', 'fi'],
@@ -221,22 +221,22 @@ window.CCA_CONTENT = (function () {
   // Two-week study plan as a checklist: [task, route]
   const plan = [
     { w: 'Week 1', t: 'Foundations: the three heaviest domains', items: [
-      ['Take the 10-question baseline from the Dashboard (day 1)', ''],
-      ['Read Agentic Architecture in the Study guide (days 1-2)', 'guide/A'],
-      ['Read Tool Design & MCP in the Study guide (days 3-4)', 'guide/T'],
-      ['Read Claude Code Configuration in the Study guide (days 5-6)', 'guide/C'],
-      ['Fix every snippet in Code Clinic', 'clinic'],
-      ['Read through Pitfalls once', 'pitfalls'],
-      ['Do the Daily 5 on at least 5 days', 'daily']
+      ['Take the 10-question baseline from the Home page (day 1)', ''],
+      ['Read Agentic Architecture in Lessons (days 1-2)', 'guide/A'],
+      ['Read Tool Design & MCP in Lessons (days 3-4)', 'guide/T'],
+      ['Read Claude Code Configuration in Lessons (days 5-6)', 'guide/C'],
+      ['Fix every snippet in Fix the Code', 'clinic'],
+      ['Read through Common Mistakes once', 'pitfalls'],
+      ['Do Daily Practice on at least 5 days', 'daily']
     ] },
     { w: 'Week 2', t: 'Sharpen, then test', items: [
-      ['Read Prompt Engineering & Structured Output in the Study guide (day 8)', 'guide/P'],
-      ['Read Context Management & Reliability in the Study guide (day 9)', 'guide/X'],
-      ['Clear the due cards in the Recall Deck', 'recall'],
-      ['Run the Weak-spot Trainer twice (days 10-11)', 'weak'],
-      ['Take a Full Simulation (day 12) and review every miss', 'sim'],
-      ['Take a second Full Simulation (day 13)', 'sim'],
-      ['Print and skim the Field Notes the night before', 'notes']
+      ['Read Prompt Engineering & Structured Output in Lessons (day 8)', 'guide/P'],
+      ['Read Context Management & Reliability in Lessons (day 9)', 'guide/X'],
+      ['Clear the due cards in Flashcards', 'recall'],
+      ['Run Fix My Weak Areas twice (days 10-11)', 'weak'],
+      ['Take a Mock Exam (day 12) and review every miss', 'sim'],
+      ['Take a second Mock Exam (day 13)', 'sim'],
+      ['Print and skim the Quick Reference the night before', 'notes']
     ] }
   ];
 
