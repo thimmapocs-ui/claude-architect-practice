@@ -28,6 +28,7 @@
 
   // ---------- home ----------
   function home() {
+    stopTimer();
     S = null;
     const progress = load();
     const domains = [...new Set(SETS.flatMap((s) => s.questions.map((q) => q.domain)))];
@@ -87,13 +88,33 @@
   }
 
   // ---------- attempt ----------
-  function start(set, forceShuffleQs) {
-    const mode = document.getElementById('mode').value;
-    const shufOpts = document.getElementById('shuf').checked;
-    const shufQs = forceShuffleQs || document.getElementById('shufq').checked;
-    const qs = (shufQs ? shuffle(set.questions) : set.questions).map((q) => ({ ...q, options: shufOpts ? shuffle(q.options) : q.options.slice() }));
-    S = { set, mode, qs, idx: 0, sel: qs.map(() => []), checked: qs.map(() => false), flags: qs.map(() => false) };
+  let timerId = null;
+  function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
+  function tick() {
+    if (!S || !S.deadline) { stopTimer(); return; }
+    const left = Math.max(0, Math.round((S.deadline - Date.now()) / 1000));
+    const el = document.getElementById('timer');
+    if (el) {
+      el.textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+      el.classList.toggle('low', left <= 300);
+    }
+    if (left <= 0) { stopTimer(); results(); }
+  }
+
+  // cfg (optional): { mode, shufOpts, shufQs, minutes }. Without it, the hub controls are read.
+  function start(set, forceShuffleQs, cfg) {
+    const c = cfg || {
+      mode: document.getElementById('mode').value,
+      shufOpts: document.getElementById('shuf').checked,
+      shufQs: forceShuffleQs || document.getElementById('shufq').checked
+    };
+    const qs = (c.shufQs ? shuffle(set.questions) : set.questions).map((q) => ({ ...q, options: c.shufOpts ? shuffle(q.options) : q.options.slice() }));
+    stopTimer();
+    S = { set, mode: c.mode, qs, idx: 0, sel: qs.map(() => []), checked: qs.map(() => false), flags: qs.map(() => false),
+      deadline: c.minutes ? Date.now() + c.minutes * 60000 : null };
+    if (S.deadline) timerId = setInterval(tick, 1000);
     renderQ();
+    tick();
     window.scrollTo(0, 0);
   }
 
@@ -108,7 +129,7 @@
     app.innerHTML = `
       <div class="row spread">
         <div><strong>${esc(S.set.title)}</strong> <span class="muted">· ${S.mode === 'exam' ? 'Exam' : 'Practice'} mode</span></div>
-        <button class="btn ghost" id="quit">Exit</button>
+        <div class="row">${S.deadline ? '<span class="timer" id="timer" aria-label="Time left"></span>' : ''}<button class="btn ghost" id="quit">Exit</button></div>
       </div>
       <div class="bar" style="margin:10px 0"><span style="width:${pct(answered, S.qs.length)}%"></span></div>
       <div class="palette">${S.qs.map((qq, i) => {
@@ -193,10 +214,12 @@
       d.n++; if (isRight(q, S.sel[i])) d.r++;
     });
 
-    if (!S.set.id.startsWith('__')) {
+    stopTimer();
+    const key = S.set.id === '__mock' ? 'mock' : S.set.id;
+    if (!S.set.id.startsWith('__') || key === 'mock') {
       const p = load();
-      const prev = p[S.set.id] || { best: 0 };
-      p[S.set.id] = { best: Math.max(prev.best, score), last: score, at: new Date().toISOString() };
+      const prev = p[key] || { best: 0 };
+      p[key] = { best: Math.max(prev.best, score), last: score, at: new Date().toISOString() };
       save(p);
     }
 
@@ -220,7 +243,7 @@
       const keep = S.qs.map((q, i) => i).filter((i) => !onlyWrong || !isRight(S.qs[i], S.sel[i]));
       if (!keep.length) { alert('Nothing to review — all correct!'); return; }
       S = { ...S, mode: 'practice', qs: keep.map((i) => S.qs[i]), sel: keep.map((i) => S.sel[i]),
-        checked: keep.map(() => true), flags: keep.map((i) => S.flags[i]), idx: 0 };
+        checked: keep.map(() => true), flags: keep.map((i) => S.flags[i]), idx: 0, deadline: null };
       renderQ();
     };
     on('#review', () => review(false));
@@ -228,6 +251,6 @@
     on('#again', home);
   }
 
-  document.getElementById('homeLink').addEventListener('click', (e) => { e.preventDefault(); home(); });
-  home();
+  // pages.js owns routing and calls CCA.quizHome for #/quiz
+  window.CCA = { SETS, quizHome: home, start, shuffle, esc, fmt, pct, load };
 })();
