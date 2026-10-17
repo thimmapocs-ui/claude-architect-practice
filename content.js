@@ -183,5 +183,58 @@ window.CCA_CONTENT = (function () {
     ['Auto-approving on raw self-reported confidence', 'It is poorly calibrated.', 'Calibrate on labeled data first.']
   ].map((r) => ({ bad: r[0], why: r[1], fix: r[2] }));
 
-  return { domains: D, names: N, overview, guide, cheatsheet, flashcards, antipatterns };
+  // "Salesforce lens": how each domain shows up in an Agentforce / Apex / MCP project.
+  const sfLens = {
+    A: 'Agentforce actions backed by Apex: enforce limits (a refund ceiling, say) inside the Apex action or a validation layer, not only in agent instructions.',
+    T: 'An MCP server over Salesforce data: one narrow purpose per tool, typed errors instead of a raw exception, and short field lists in responses.',
+    C: 'An SFDX repo: put deploy-target rules in CLAUDE.md and block deploys to the wrong org with a PreToolUse hook.',
+    P: 'Extracting from cases or emails: nullable fields and an `unclear` value beat forcing a picklist guess.',
+    X: 'Long case histories: pin a case-facts block (case id, account, status, SLA dates) and trim API responses to the fields the agent needs.'
+  };
+
+  // Code Clinic: click the line that is wrong. `bug` is the 0-based index of that line.
+  const clinic = [
+    { d: 'C', title: 'A guard hook that does not guard', lang: 'bash',
+      lines: ['#!/bin/bash', 'CMD=$(jq -r \'.tool_input.command\')', 'if echo "$CMD" | grep -q "rm -rf"; then', '  echo "blocked: destructive command" >&2', '  exit 1', 'fi'],
+      bug: 4, why: 'Only exit code 2 blocks a tool call. Exit 1 is a non-blocking error, so the command still runs.', fix: 'Use `exit 2`, or print JSON with `permissionDecision: "deny"` and exit 0.' },
+    { d: 'A', title: 'A loop that ends too early', lang: 'js',
+      lines: ['while (true) {', '  const r = await callModel(messages);', '  if (r.text.includes("done")) break;', '  for (const t of r.toolCalls) messages.push(await run(t));', '}'],
+      bug: 2, why: 'Prose is not a control signal. The reply may say "done" mid-task, or never say it.', fix: 'Branch on `stop_reason`: loop on `tool_use`, stop on `end_turn`.' },
+    { d: 'C', title: 'A skill that is not read-only', lang: 'yaml',
+      lines: ['---', 'name: audit-config', 'description: Review config files', 'allowed-tools: Read Grep   # keeps this skill read-only', '---'],
+      bug: 3, why: '`allowed-tools` only pre-approves those tools for the turn. It does not remove the others.', fix: 'Use `disallowed-tools` to take tools away, or set a restrictive subagent `tools` allowlist.' },
+    { d: 'T', title: 'A secret in a shared file', lang: 'json',
+      lines: ['{', '  "mcpServers": {', '    "crm": {', '      "command": "crm-mcp",', '      "env": { "API_TOKEN": "sk-live-9f3a..." }', '    }', '  }', '}'],
+      bug: 4, why: 'A shared config is committed to git, so the token leaks to everyone with the repo.', fix: 'Reference an environment variable, such as `"${API_TOKEN}"`, and set it per developer.' },
+    { d: 'T', title: 'A tool the model cannot route to', lang: 'json',
+      lines: ['{', '  "name": "lookup_account",', '  "description": "Looks up an account.",', '  "input_schema": { "type": "object" }', '}'],
+      bug: 2, why: 'The description is the routing layer. A one-liner gives no inputs, boundaries or alternatives, so it collides with similar tools.', fix: 'Say what it returns, what ids it accepts, and when to use the neighbouring tool instead.' },
+    { d: 'P', title: 'A schema that forces a guess', lang: 'json',
+      lines: ['"category": {', '  "type": "string",', '  "enum": ["billing", "outage", "access", "howto"]', '},', '"invoice_number": { "type": "string" }'],
+      bug: 2, why: 'A closed enum with no escape makes the model pick the nearest value for anything that fits none.', fix: 'Add `"other"` or `"unclear"` and a `category_detail` string.' },
+    { d: 'C', title: 'A CI gate that parses prose', lang: 'bash',
+      lines: ['RESULT=$(claude -p "Review this diff. Say APPROVED or REJECTED.")', 'if echo "$RESULT" | grep -q "APPROVED"; then', '  exit 0', 'fi', 'exit 1'],
+      bug: 1, why: 'Matching a word in free text is brittle. "NOT APPROVED" also contains the word.', fix: 'Use `--output-format json --json-schema` and read the `structured_output` field.' },
+    { d: 'A', title: 'A retry that doubles the charge', lang: 'js',
+      lines: ['for (let i = 0; i < 3; i++) {', '  try {', '    return await api.charge(order);', '  } catch (e) { continue; }', '}'],
+      bug: 3, why: 'It retries every error, and a timed-out charge may already have succeeded, so the retry can charge twice.', fix: 'Retry only transient errors, and send an idempotency key with each logical charge.' },
+    { d: 'A', title: 'A delegation with no context', lang: 'text',
+      lines: ['Task for subagent "analyst":', '', '  "Continue the analysis we discussed earlier', '   and flag anything unusual."'],
+      bug: 2, why: 'A non-fork subagent starts fresh. It has never seen "earlier", so it can only guess.', fix: 'Put the data, the goal and the definition of "unusual" in the task message.' },
+    { d: 'T', title: 'A hook matcher that matches nothing', lang: 'json',
+      lines: ['"PreToolUse": [{', '  "matcher": "mcp__crm",', '  "hooks": [{ "type": "command", "command": ".claude/hooks/crm-guard.sh" }]', '}]'],
+      bug: 1, why: 'MCP tools are named `mcp__<server>__<tool>`. The bare server name matches no tool name.', fix: 'Use the wildcard form `mcp__crm__.*` to cover every tool from that server.' }
+  ];
+
+  // Study plan as a checklist: [task, route]
+  const plan = [
+    { w: 'Week 1', t: 'Agent loops and orchestration', items: [['Read the Agentic Architecture notes in the Study guide', 'guide/A'], ['Do 10 Pitfalls on loops and retries', 'pitfalls'], ['Take the Daily 5 each day', 'daily']] },
+    { w: 'Week 2', t: 'Tools and MCP', items: [['Read Tool Design in the Study guide', 'guide/T'], ['Fix 3 snippets in Code Clinic', 'clinic'], ['Review the Recall Deck for tools', 'recall']] },
+    { w: 'Week 3', t: 'Claude Code configuration', items: [['Read Claude Code in the Study guide', 'guide/C'], ['Clear every Code Clinic snippet', 'clinic'], ['Print the Field Notes', 'notes']] },
+    { w: 'Week 4', t: 'Prompts, schemas and CI', items: [['Read Prompt Engineering in the Study guide', 'guide/P'], ['Run the Weak-spot Trainer twice', 'weak'], ['Finish one quiz set above 70%', 'quiz']] },
+    { w: 'Week 5', t: 'Context and reliability', items: [['Read Context Management in the Study guide', 'guide/X'], ['Take a Full Simulation', 'sim'], ['Work through every due Recall card', 'recall']] },
+    { w: 'Week 6', t: 'Close the gaps', items: [['Run the Weak-spot Trainer until it is nearly empty', 'weak'], ['Take two more Full Simulations', 'sim'], ['Skim Field Notes the night before', 'notes']] }
+  ];
+
+  return { domains: D, names: N, overview, guide, cheatsheet, flashcards, antipatterns, sfLens, clinic, plan };
 })();
