@@ -1,0 +1,18 @@
+# Claude Architect Practice
+
+> Free, original, scenario-based practice questions for the Claude Certified Architect – Foundations exam. 8 sets, 120 questions, with an explanation for every answer option. Unofficial and not affiliated with Anthropic.
+
+## Site
+- [Practice quiz app](https://thimmapocs-ui.github.io/claude-architect-practice/): interactive practice and exam modes
+- [Source repository](https://github.com/thimmapocs-ui/claude-architect-practice): question sets as plain JavaScript files in /sets
+
+## Domains covered
+- Agentic Architecture & Orchestration
+- Tool Design & MCP Integration
+- Claude Code Configuration & Workflows
+- Prompt Engineering & Structured Output
+- Context Management & Reliability
+
+## Notes
+- Questions are original and are not real exam content.
+- Verify answers against the official docs at https://docs.claude.com and https://code.claude.com/docs
