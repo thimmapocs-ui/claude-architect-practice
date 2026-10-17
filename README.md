@@ -8,7 +8,7 @@ answers are wrong.
 > Verify against the official docs at https://docs.claude.com.
 
 ## Features
-- 7 sets (90 questions) covering the five exam domains:
+- 8 sets (120 questions) covering the five exam domains:
   - Agentic Architecture & Orchestration
   - Tool Design & MCP Integration
   - Claude Code Configuration & Workflows
