@@ -26,14 +26,6 @@ window.CCA_CONTENT = (function () {
       'Claude Code running in CI for review, tests or generation.',
       'A structured extraction pipeline that feeds a downstream system.',
       'A developer-productivity setup that mixes tools, MCP servers and automation.'
-    ],
-    plan: [
-      ['Week 1', 'Agentic loops, `stop_reason`, hub-and-spoke orchestration, and the workflow patterns (chaining, routing, parallelization, orchestrator-workers, evaluator-optimizer).'],
-      ['Week 2', 'Tool design: descriptions as routing, structured errors, `tool_choice`, scoped toolsets, MCP servers.'],
-      ['Week 3', 'Claude Code: CLAUDE.md, `.claude/rules`, skills, subagents, hooks, settings.'],
-      ['Week 4', 'Headless and CI: `claude -p`, output formats, `--json-schema`, `--bare`, permission modes. Then prompting and structured output.'],
-      ['Week 5', 'Context and reliability: case facts, trimming, escalation triggers, provenance, stratified evaluation. Take a mock exam.'],
-      ['Week 6', 'Review wrong answers by domain, redo flashcards and anti-patterns, take two more mock exams, then rest.']
     ]
   };
 
@@ -226,14 +218,26 @@ window.CCA_CONTENT = (function () {
       bug: 1, why: 'MCP tools are named `mcp__<server>__<tool>`. The bare server name matches no tool name.', fix: 'Use the wildcard form `mcp__crm__.*` to cover every tool from that server.' }
   ];
 
-  // Study plan as a checklist: [task, route]
+  // Two-week study plan as a checklist: [task, route]
   const plan = [
-    { w: 'Week 1', t: 'Agent loops and orchestration', items: [['Read the Agentic Architecture notes in the Study guide', 'guide/A'], ['Do 10 Pitfalls on loops and retries', 'pitfalls'], ['Take the Daily 5 each day', 'daily']] },
-    { w: 'Week 2', t: 'Tools and MCP', items: [['Read Tool Design in the Study guide', 'guide/T'], ['Fix 3 snippets in Code Clinic', 'clinic'], ['Review the Recall Deck for tools', 'recall']] },
-    { w: 'Week 3', t: 'Claude Code configuration', items: [['Read Claude Code in the Study guide', 'guide/C'], ['Clear every Code Clinic snippet', 'clinic'], ['Print the Field Notes', 'notes']] },
-    { w: 'Week 4', t: 'Prompts, schemas and CI', items: [['Read Prompt Engineering in the Study guide', 'guide/P'], ['Run the Weak-spot Trainer twice', 'weak'], ['Finish one quiz set above 70%', 'quiz']] },
-    { w: 'Week 5', t: 'Context and reliability', items: [['Read Context Management in the Study guide', 'guide/X'], ['Take a Full Simulation', 'sim'], ['Work through every due Recall card', 'recall']] },
-    { w: 'Week 6', t: 'Close the gaps', items: [['Run the Weak-spot Trainer until it is nearly empty', 'weak'], ['Take two more Full Simulations', 'sim'], ['Skim Field Notes the night before', 'notes']] }
+    { w: 'Week 1', t: 'Foundations: the three heaviest domains', items: [
+      ['Take the 10-question baseline from the Dashboard (day 1)', ''],
+      ['Read Agentic Architecture in the Study guide (days 1-2)', 'guide/A'],
+      ['Read Tool Design & MCP in the Study guide (days 3-4)', 'guide/T'],
+      ['Read Claude Code Configuration in the Study guide (days 5-6)', 'guide/C'],
+      ['Fix every snippet in Code Clinic', 'clinic'],
+      ['Read through Pitfalls once', 'pitfalls'],
+      ['Do the Daily 5 on at least 5 days', 'daily']
+    ] },
+    { w: 'Week 2', t: 'Sharpen, then test', items: [
+      ['Read Prompt Engineering & Structured Output in the Study guide (day 8)', 'guide/P'],
+      ['Read Context Management & Reliability in the Study guide (day 9)', 'guide/X'],
+      ['Clear the due cards in the Recall Deck', 'recall'],
+      ['Run the Weak-spot Trainer twice (days 10-11)', 'weak'],
+      ['Take a Full Simulation (day 12) and review every miss', 'sim'],
+      ['Take a second Full Simulation (day 13)', 'sim'],
+      ['Print and skim the Field Notes the night before', 'notes']
+    ] }
   ];
 
   return { domains: D, names: N, overview, guide, cheatsheet, flashcards, antipatterns, sfLens, clinic, plan };
