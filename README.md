@@ -24,7 +24,7 @@ answers are wrong.
 - **Fix My Weak Areas**: builds a session from questions you missed, then unseen ones, then your weakest correct answers
 - **Daily Practice**: five questions that change each day
 - **Flashcards**: flashcards on a spaced schedule (1, 3, 7, 14 days) with Again / Got it
-- **Fix the Code**: click the faulty line in 10 config and code snippets (hooks, loops, schemas, MCP config, CI)
+- **Fix the Code**: find the faulty line in 10 config and code snippets, then pick the right fix (hooks, loops, schemas, MCP config, CI)
 - **Mock Exam**: timed, 30 or 60 questions drawn by domain weight
 - **Practice Tests**: 8 sets, practice or exam mode
 - **Lessons**, **Quick Reference** (printable), **Common Mistakes**, and an interactive **study plan**, with a "Salesforce lens" note per domain
