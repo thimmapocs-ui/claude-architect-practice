@@ -340,7 +340,7 @@
         <p class="muted small">${esc(o.note)}</p></div>
       <h2>Typical scenarios</h2>
       <ul>${o.scenarios.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
-      <h2>Six-week plan <span class="muted small">${got}/${totalItems} done</span></h2>
+      <h2>Two-week plan <span class="muted small">${got}/${totalItems} done</span></h2>
       <div class="bar" style="margin-bottom:10px"><span style="width:${pct(got, totalItems)}%"></span></div>
       ${C.plan.map((w, wi) => `<div class="card"><h3>${esc(w.w)} · ${esc(w.t)}</h3>
         ${w.items.map(([t, r], i) => `<label class="chk"><input type="checkbox" data-k="${wi}.${i}" ${done[wi + '.' + i] ? 'checked' : ''}>
