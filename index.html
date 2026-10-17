@@ -28,9 +28,19 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a class="skip" href="#app">Skip to main content</a>
   <header class="topbar">
-    <a href="#" class="brand" id="homeLink">Claude Architect Practice</a>
-    <span class="tag">Free · Community · Unofficial</span>
+    <a href="#/" class="brand" id="homeLink">Claude Architect Practice</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#/overview" data-nav="overview">Overview</a>
+      <a href="#/guide" data-nav="guide">Study guide</a>
+      <a href="#/cheatsheet" data-nav="cheatsheet">Cheat sheet</a>
+      <a href="#/quiz" data-nav="quiz">Quiz</a>
+      <a href="#/mock" data-nav="mock">Mock exam</a>
+      <a href="#/flashcards" data-nav="flashcards">Flashcards</a>
+      <a href="#/antipatterns" data-nav="antipatterns">Anti-patterns</a>
+      <a href="https://github.com/thimmapocs-ui/claude-architect-practice" target="_blank" rel="noopener">GitHub</a>
+    </nav>
   </header>
   <main id="app" aria-live="polite">
     <h1>Free practice questions for the Claude Certified Architect – Foundations exam</h1>
@@ -47,9 +57,15 @@
     <p>Practice mode and exam mode, shuffled questions, per-domain score breakdown, and progress saved only in your browser. Free, with no sign-up.</p>
   </main>
   <footer class="foot">
-    Original practice questions written for study. Not affiliated with or endorsed by Anthropic,
-    and not real exam content. Check answers against the official documentation at
-    <a href="https://docs.claude.com" target="_blank" rel="noopener">docs.claude.com</a>.
+    <div class="footgrid">
+      <div><strong>Study</strong><br><a href="#/overview">Overview</a><br><a href="#/guide">Study guide</a><br><a href="#/cheatsheet">Cheat sheet</a></div>
+      <div><strong>Practice</strong><br><a href="#/quiz">Quiz</a><br><a href="#/mock">Mock exam</a><br><a href="#/flashcards">Flashcards</a><br><a href="#/antipatterns">Anti-patterns</a></div>
+      <div><strong>Official resources</strong><br>
+        <a href="https://docs.claude.com" target="_blank" rel="noopener">Claude docs</a><br>
+        <a href="https://code.claude.com/docs" target="_blank" rel="noopener">Claude Code docs</a><br>
+        <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener">Building effective agents</a></div>
+    </div>
+    <p>Original practice material written for study. Not affiliated with or endorsed by Anthropic, and not real exam content. Check answers against the official documentation.</p>
   </footer>
 
   <!-- Question sets: each file pushes one set onto window.QUESTION_SETS -->
@@ -62,5 +78,7 @@
   <script src="sets/set-07-prompts-batches.js"></script>
   <script src="sets/set-08-verified-mixed.js"></script>
   <script src="app.js"></script>
+  <script src="content.js"></script>
+  <script src="pages.js"></script>
 </body>
 </html>
