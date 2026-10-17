@@ -29,20 +29,31 @@
 </head>
 <body>
   <a class="skip" href="#app">Skip to main content</a>
-  <header class="topbar">
-    <a href="#/" class="brand" id="homeLink">Claude Architect Practice</a>
-    <nav class="nav" aria-label="Main">
-      <a href="#/overview" data-nav="overview">Overview</a>
-      <a href="#/guide" data-nav="guide">Study guide</a>
-      <a href="#/cheatsheet" data-nav="cheatsheet">Cheat sheet</a>
-      <a href="#/quiz" data-nav="quiz">Quiz</a>
-      <a href="#/mock" data-nav="mock">Mock exam</a>
-      <a href="#/flashcards" data-nav="flashcards">Flashcards</a>
-      <a href="#/antipatterns" data-nav="antipatterns">Anti-patterns</a>
-      <a href="https://github.com/thimmapocs-ui/claude-architect-practice" target="_blank" rel="noopener">GitHub</a>
-    </nav>
-  </header>
-  <main id="app" aria-live="polite">
+  <div class="shell">
+    <aside class="side" aria-label="Sections">
+      <a href="#/" class="brand" id="homeLink"><span class="mark" aria-hidden="true"></span><span>Architect<br>Practice</span></a>
+      <button class="searchbtn" id="searchBtn" type="button">Search <kbd>/</kbd></button>
+      <nav class="nav">
+        <a href="#/" data-nav="">Dashboard</a>
+        <h4>Learn</h4>
+        <a href="#/guide" data-nav="guide">Study guide</a>
+        <a href="#/notes" data-nav="notes">Field notes</a>
+        <a href="#/pitfalls" data-nav="pitfalls">Pitfalls</a>
+        <a href="#/plan" data-nav="plan">Exam facts &amp; plan</a>
+        <h4>Train</h4>
+        <a href="#/daily" data-nav="daily">Daily 5</a>
+        <a href="#/weak" data-nav="weak">Weak-spot Trainer</a>
+        <a href="#/quiz" data-nav="quiz">Quiz sets</a>
+        <a href="#/sim" data-nav="sim">Full simulation</a>
+        <a href="#/recall" data-nav="recall">Recall Deck</a>
+        <a href="#/clinic" data-nav="clinic">Code Clinic</a>
+        <h4>Elsewhere</h4>
+        <a href="https://code.claude.com/docs" target="_blank" rel="noopener">Claude Code docs</a>
+        <a href="https://github.com/thimmapocs-ui/claude-architect-practice" target="_blank" rel="noopener">Source on GitHub</a>
+      </nav>
+    </aside>
+    <div class="content">
+      <main id="app" aria-live="polite">
     <h1>Free practice questions for the Claude Certified Architect – Foundations exam</h1>
     <p>Original, scenario-based practice questions with an explanation for every answer option. 8 question sets, 120 questions. Unofficial and not affiliated with Anthropic. Enable JavaScript to use the interactive quiz.</p>
     <h2>Exam domains covered</h2>
@@ -54,19 +65,13 @@
       <li>Context Management &amp; Reliability: case facts, escalation, provenance, evaluation</li>
     </ul>
     <h2>Features</h2>
-    <p>Practice mode and exam mode, shuffled questions, per-domain score breakdown, and progress saved only in your browser. Free, with no sign-up.</p>
+    <p>A progress dashboard, a weak-spot trainer, a daily 5-question challenge, spaced-repetition flashcards, a code clinic where you find the faulty line, a timed full simulation, a printable cheat sheet and a study plan. Free, with no sign-up, and your progress stays in your browser.</p>
   </main>
-  <footer class="foot">
-    <div class="footgrid">
-      <div><strong>Study</strong><br><a href="#/overview">Overview</a><br><a href="#/guide">Study guide</a><br><a href="#/cheatsheet">Cheat sheet</a></div>
-      <div><strong>Practice</strong><br><a href="#/quiz">Quiz</a><br><a href="#/mock">Mock exam</a><br><a href="#/flashcards">Flashcards</a><br><a href="#/antipatterns">Anti-patterns</a></div>
-      <div><strong>Official resources</strong><br>
-        <a href="https://docs.claude.com" target="_blank" rel="noopener">Claude docs</a><br>
-        <a href="https://code.claude.com/docs" target="_blank" rel="noopener">Claude Code docs</a><br>
-        <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener">Building effective agents</a></div>
+      <footer class="foot">
+        <p>Original practice material written for study. Not affiliated with or endorsed by Anthropic, and not real exam content. Check answers against the official documentation at <a href="https://docs.claude.com" target="_blank" rel="noopener">docs.claude.com</a>.</p>
+      </footer>
     </div>
-    <p>Original practice material written for study. Not affiliated with or endorsed by Anthropic, and not real exam content. Check answers against the official documentation.</p>
-  </footer>
+  </div>
 
   <!-- Question sets: each file pushes one set onto window.QUESTION_SETS -->
   <script src="sets/set-01-agent-sdk.js"></script>
