@@ -23,6 +23,9 @@
     return sel.length === c.length && c.every((i) => sel.includes(i));
   };
   const pct = (n, d) => (d ? Math.round((100 * n) / d) : 0);
+  // Stable id for a question: a small hash of its stem, so progress survives reshuffling.
+  const qid = (q) => { let h = 5381; const s = q.question; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return 'q' + (h >>> 0).toString(36); };
+  const dayKey = (d) => { d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
 
   let S = null; // active attempt
 
@@ -190,7 +193,7 @@
       renderQ();
     }));
     app.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => { S.idx = Number(b.dataset.go); renderQ(); }));
-    on('#quit', () => { if (confirm('Exit this attempt? Progress in this attempt will be lost.')) home(); });
+    on('#quit', () => { if (confirm('Exit this attempt? Progress in this attempt will be lost.')) leave(); });
     on('#prev', () => { S.idx--; renderQ(); });
     on('#next', () => { S.idx++; renderQ(); window.scrollTo(0, 0); });
     on('#flag', () => { S.flags[S.idx] = !S.flags[S.idx]; renderQ(); });
@@ -201,6 +204,9 @@
       results();
     });
   }
+
+  // Return to the page the attempt was started from (pages.js supplies CCA.leave); fall back to the hub.
+  function leave() { stopTimer(); S = null; if (window.CCA && window.CCA.leave) window.CCA.leave(); else home(); }
 
   function on(sel, fn) { const el = app.querySelector(sel); if (el) el.addEventListener('click', fn); }
 
@@ -215,19 +221,33 @@
     });
 
     stopTimer();
-    const key = S.set.id === '__mock' ? 'mock' : S.set.id;
-    if (!S.set.id.startsWith('__') || key === 'mock') {
+    if (!S.recorded) { // review passes re-enter results(); record an attempt only once
+      S.recorded = true;
       const p = load();
-      const prev = p[key] || { best: 0 };
-      p[key] = { best: Math.max(prev.best, score), last: score, at: new Date().toISOString() };
+      const key = S.set.id === '__mock' ? 'mock' : S.set.id;
+      if (!S.set.id.startsWith('__') || key === 'mock') {
+        const prev = p[key] || { best: 0 };
+        p[key] = { best: Math.max(prev.best, score), last: score, at: new Date().toISOString() };
+      }
+      p.q = p.q || {};
+      S.qs.forEach((q, i) => {
+        if (!S.sel[i].length) return;
+        const ok = isRight(q, S.sel[i]) ? 1 : 0;
+        const o = p.q[qid(q)] || { n: 0, r: 0 };
+        p.q[qid(q)] = { n: o.n + 1, r: o.r + ok, last: ok, at: Date.now() };
+      });
+      const today = dayKey();
+      p.days = p.days || [];
+      if (!p.days.includes(today)) p.days.push(today);
       save(p);
+      if (window.CCA && window.CCA.onResults) window.CCA.onResults(S, score);
     }
 
     app.innerHTML = `
       <div class="card">
         <h1>${esc(S.set.title)} — results</h1>
         <div class="score">${score}%</div>
-        <p class="muted">${right} of ${S.qs.length} correct. Treat 72% or higher as a reasonable practice target.</p>
+        <p class="muted">${right} of ${S.qs.length} correct. Treat 72% or higher as a reasonable practice target. Your dashboard has been updated.</p>
         <table><tr><th>Domain</th><th>Score</th><th style="width:40%"></th></tr>
           ${Object.entries(byDomain).map(([d, v]) => `<tr><td>${esc(d)}</td><td>${v.r}/${v.n}</td>
             <td><div class="bar"><span style="width:${pct(v.r, v.n)}%"></span></div></td></tr>`).join('')}
@@ -248,9 +268,9 @@
     };
     on('#review', () => review(false));
     on('#reviewWrong', () => review(true));
-    on('#again', home);
+    on('#again', leave);
   }
 
   // pages.js owns routing and calls CCA.quizHome for #/quiz
-  window.CCA = { SETS, quizHome: home, start, shuffle, esc, fmt, pct, load };
+  window.CCA = { SETS, quizHome: home, start, shuffle, esc, fmt, pct, load, save, qid, dayKey, correctIdx };
 })();
