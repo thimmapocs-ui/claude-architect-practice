@@ -247,7 +247,7 @@
       <div class="card">
         <h1>${esc(S.set.title)} — results</h1>
         <div class="score">${score}%</div>
-        <p class="muted">${right} of ${S.qs.length} correct. Treat 72% or higher as a reasonable practice target. Your dashboard has been updated.</p>
+        <p class="muted">${right} of ${S.qs.length} correct. Treat 72% or higher as a reasonable practice target. Your Home page has been updated.</p>
         <table><tr><th>Domain</th><th>Score</th><th style="width:40%"></th></tr>
           ${Object.entries(byDomain).map(([d, v]) => `<tr><td>${esc(d)}</td><td>${v.r}/${v.n}</td>
             <td><div class="bar"><span style="width:${pct(v.r, v.n)}%"></span></div></td></tr>`).join('')}
