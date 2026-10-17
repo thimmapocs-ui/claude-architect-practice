@@ -230,36 +230,49 @@
   // ---------- code clinic ----------
   function clinic() {
     const solved = () => load().clinic || {};
+    const short = { A: 'Agentic', T: 'Tools & MCP', C: 'Claude Code', P: 'Prompts & Schemas', X: 'Context' };
     const list = () => {
       const s = solved();
       app.innerHTML = `
         <h1>Fix the Code</h1>
-        <p class="muted">Each snippet has one faulty line. Click it. ${Object.keys(s).length} of ${C.clinic.length} fixed.</p>
+        <p class="muted">Ten short, broken snippets. For each one, click the faulty line, then choose the right fix. ${Object.keys(s).length} of ${C.clinic.length} done.</p>
         <div class="grid">${C.clinic.map((c, i) => `
           <button class="card tcard clin ${s[i] ? 'fixed' : ''}" data-i="${i}">
-            <span class="pill">${esc(domainName(c.d).split(' ')[0])}</span>
-            <h3>${esc(c.title)}</h3><span class="muted small">${s[i] ? 'Fixed' : 'Not fixed yet'} · ${esc(c.lang)}</span></button>`).join('')}</div>`;
+            <span class="muted small">${i + 1} · ${esc(short[c.d] || '')}</span>
+            <h3>${esc(c.goal)}</h3>
+            <span class="muted small">${s[i] ? '✓ Done' : 'Start'} · ${c.lines.length} lines of ${esc(c.lang)}</span></button>`).join('')}</div>`;
       app.querySelectorAll('[data-i]').forEach((b) => b.addEventListener('click', () => open(Number(b.dataset.i))));
     };
     const open = (i) => {
-      const c = C.clinic[i]; let wrong = [], done = false;
+      const c = C.clinic[i]; let wrong = [], found = false, picked = null;
+      const opts = shuffle(c.choices.map((t, k) => ({ t, ok: k === 0 })));
       const draw = () => {
+        const done = picked !== null && opts[picked].ok;
         app.innerHTML = `
-          <div class="row spread"><h1>${esc(c.title)}</h1><button class="btn ghost sm" id="back">All snippets</button></div>
-          <p class="muted">Click the line that causes the problem.</p>
+          <div class="row spread"><h1>Snippet ${i + 1} of ${C.clinic.length}</h1><button class="btn ghost sm" id="back">All snippets</button></div>
+          <p><strong>Goal:</strong> ${esc(c.goal)}</p>
+          <p class="muted">${found ? 'You found the faulty line.' : 'Step 1 of 2: click the line that causes the problem.'}</p>
           <div class="code" role="group" aria-label="Code snippet">${c.lines.map((l, n) => `
-            <button class="cl ${wrong.includes(n) ? 'wrongline' : ''} ${done && n === c.bug ? 'bugline' : ''}" data-n="${n}" ${done ? 'disabled' : ''}>
+            <button class="cl ${wrong.includes(n) ? 'wrongline' : ''} ${found && n === c.bug ? 'bugline' : ''}" data-n="${n}" ${found ? 'disabled' : ''}>
               <span class="ln">${n + 1}</span><code>${esc(l) || '&nbsp;'}</code></button>`).join('')}</div>
-          ${wrong.length && !done ? `<p class="bad-note">Not that line. ${wrong.length} wrong so far.</p><button class="btn ghost sm" id="show">Show the answer</button>` : ''}
+          ${wrong.length && !found ? `<p class="bad-note">Not that line. ${wrong.length} wrong so far.</p><button class="btn ghost sm" id="show">Show me the line</button>` : ''}
+          ${found ? `<div class="card"><h2>Step 2 of 2: what is the right fix?</h2><div class="opts">${opts.map((o, k) => `
+            <button class="opt ${picked === k ? (o.ok ? 'right' : 'wrong') : ''}" data-k="${k}" ${done ? 'disabled' : ''}>${esc(o.t)}</button>`).join('')}</div>
+            ${picked !== null && !done ? '<p class="bad-note">Not quite. Try another.</p>' : ''}</div>` : ''}
           ${done ? `<div class="explain"><strong>The problem</strong><p>${fmt(c.why)}</p><strong>The fix</strong><p>${fmt(c.fix)}</p></div>
             <div class="row"><button class="btn" id="next">Next snippet</button></div>` : ''}`;
         $('back').addEventListener('click', list);
         app.querySelectorAll('[data-n]').forEach((b) => b.addEventListener('click', () => {
           const n = Number(b.dataset.n);
-          if (n === c.bug) { done = true; mutate((p) => { p.clinic = p.clinic || {}; p.clinic[i] = 1; }); markDay(); } else if (!wrong.includes(n)) wrong.push(n);
+          if (n === c.bug) found = true; else if (!wrong.includes(n)) wrong.push(n);
           draw();
         }));
-        const sh = $('show'); if (sh) sh.addEventListener('click', () => { done = true; draw(); });
+        app.querySelectorAll('[data-k]').forEach((b) => b.addEventListener('click', () => {
+          picked = Number(b.dataset.k);
+          if (opts[picked].ok) { mutate((p) => { p.clinic = p.clinic || {}; p.clinic[i] = 1; }); markDay(); }
+          draw();
+        }));
+        const sh = $('show'); if (sh) sh.addEventListener('click', () => { found = true; draw(); });
         const nx = $('next'); if (nx) nx.addEventListener('click', () => open((i + 1) % C.clinic.length));
       };
       draw(); window.scrollTo(0, 0);
