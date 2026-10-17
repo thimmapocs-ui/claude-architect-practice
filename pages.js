@@ -90,22 +90,22 @@
     const nextPlan = nextPlanItem(p);
     const empty = att === 0;
     app.innerHTML = `
-      <h1>Your prep dashboard</h1>
+      <h1>Your prep home</h1>
       <p class="muted">Progress is calculated from your own answers and stays in this browser.</p>
       ${empty ? `<div class="card start">
         <h2>Start with a 10-question baseline</h2>
-        <p>It samples every domain by exam weight, so the dashboard can find your weak spots. Takes about 10 minutes.</p>
+        <p>It samples every domain by exam weight, so the app can find your weak spots. Takes about 10 minutes.</p>
         <button class="btn" id="baseline">Take the baseline</button></div>` : ''}
       <div class="dash">
         <div class="card center">${ring(ready)}
           <p class="muted small">${ready == null ? 'Answer at least 10 questions to see an estimate.' : `Weighted by domain, from ${att} of ${all.length} questions.`}</p></div>
         <div class="card center"><div class="big">${streak(p)}</div><p class="muted">day streak</p>
-          <p class="muted small">Any finished quiz, Daily 5 or recall card counts.</p></div>
+          <p class="muted small">Any finished quiz, Daily Practice or recall card counts.</p></div>
         <div class="card mission"><h2>Today</h2>
           <ul class="tasks">
-            <li class="${dailyDone ? 'done' : ''}">${link('daily', 'Daily 5', 'tl')}<span class="muted">${dailyDone ? `done · ${p.daily.score}%` : '5 fresh questions'}</span></li>
-            <li>${link('weak', 'Weak-spot Trainer', 'tl')}<span class="muted">${wk.wrong} missed · ${wk.unseen} unseen</span></li>
-            <li>${link('recall', 'Recall Deck', 'tl')}<span class="muted">${due} due</span></li>
+            <li class="${dailyDone ? 'done' : ''}">${link('daily', 'Daily Practice', 'tl')}<span class="muted">${dailyDone ? `done · ${p.daily.score}%` : '5 fresh questions'}</span></li>
+            <li>${link('weak', 'Fix My Weak Areas', 'tl')}<span class="muted">${wk.wrong} missed · ${wk.unseen} unseen</span></li>
+            <li>${link('recall', 'Flashcards', 'tl')}<span class="muted">${due} due</span></li>
             <li>${link('plan', nextPlan ? esc(nextPlan[0]) : 'Study plan complete', 'tl')}<span class="muted">${nextPlan ? 'next in your plan' : 'nice work'}</span></li>
           </ul></div>
       </div>
@@ -149,23 +149,23 @@
   function daily() {
     const p = load(), done = p.daily && p.daily.date === dayKey();
     app.innerHTML = `
-      <h1>Daily 5</h1>
+      <h1>Daily Practice</h1>
       <div class="card"><p>Five questions that change every day, the same for everyone. A quick habit that keeps your streak alive.</p>
         ${done ? `<p><strong>Done for today:</strong> ${p.daily.score}%. Come back tomorrow, or run it again for practice.</p>` : ''}
         <button class="btn" id="go">${done ? 'Run again' : 'Start today\'s 5'}</button></div>`;
-    $('go').addEventListener('click', () => run('__daily', 'Daily 5 · ' + dayKey(), dailyQs()));
+    $('go').addEventListener('click', () => run('__daily', 'Daily Practice · ' + dayKey(), dailyQs()));
   }
 
   // ---------- weak-spot trainer ----------
   function weak() {
     const o = ordered();
     app.innerHTML = `
-      <h1>Weak-spot Trainer</h1>
+      <h1>Fix My Weak Areas</h1>
       <div class="card"><p>Builds a session from what you have missed, then questions you have not seen, then your weakest correct answers.</p>
         <div class="row stat3"><div><b>${o.wrong}</b><span>missed</span></div><div><b>${o.unseen}</b><span>unseen</span></div><div><b>${all.length - o.wrong - o.unseen}</b><span>answered right</span></div></div>
         <div class="row"><label>Session size <select id="n"><option>10</option><option>20</option><option>5</option></select></label>
           <button class="btn" id="go">Start training</button></div></div>`;
-    $('go').addEventListener('click', () => run('__weak', 'Weak-spot Trainer', ordered().list.slice(0, Number($('n').value)).map((x) => x.q)));
+    $('go').addEventListener('click', () => run('__weak', 'Fix My Weak Areas', ordered().list.slice(0, Number($('n').value)).map((x) => x.q)));
   }
 
   // ---------- recall deck (spaced repetition) ----------
@@ -186,7 +186,7 @@
       if (!queue) {
         const d = dueCards(filter);
         app.innerHTML = `
-          <h1>Recall Deck</h1>
+          <h1>Flashcards</h1>
           <p class="muted">Cards you miss come back sooner; cards you know come back later (1, 3, 7, then 14 days).</p>
           <div class="card"><div class="row stat3"><div><b>${k.nw}</b><span>new</span></div><div><b>${k.learn}</b><span>learning</span></div><div><b>${k.mastered}</b><span>mastered</span></div></div>
             <div class="row"><label>Domain <select id="fdom"><option value="all">All domains</option>
@@ -196,10 +196,10 @@
         $('go').addEventListener('click', () => { queue = shuffle(d).slice(0, 20); flipped = false; draw(); });
         keyHandler = null; return;
       }
-      if (!queue.length) { queue = null; markDay(); app.innerHTML = `<h1>Recall Deck</h1><div class="card"><h2>Session complete</h2><p>Nice. Cards come back when they are due.</p>${link('recall', 'Back to the deck')} ${link('', 'Dashboard', 'btn ghost')}</div>`; keyHandler = null; return; }
+      if (!queue.length) { queue = null; markDay(); app.innerHTML = `<h1>Flashcards</h1><div class="card"><h2>Session complete</h2><p>Nice. Cards come back when they are due.</p>${link('recall', 'Back to the deck')} ${link('', 'Dashboard', 'btn ghost')}</div>`; keyHandler = null; return; }
       const c = queue[0];
       app.innerHTML = `
-        <div class="row spread"><h1>Recall Deck</h1><button class="btn ghost sm" id="stop">End session</button></div>
+        <div class="row spread"><h1>Flashcards</h1><button class="btn ghost sm" id="stop">End session</button></div>
         <button class="flash ${flipped ? 'flipped' : ''}" id="card" aria-label="Flip card">
           <span class="muted small">${esc(domainName(c.d))} · ${flipped ? 'Answer' : 'Question'}</span>
           <span class="ftext">${fmt(flipped ? c.back : c.front)}</span></button>
@@ -233,7 +233,7 @@
     const list = () => {
       const s = solved();
       app.innerHTML = `
-        <h1>Code Clinic</h1>
+        <h1>Fix the Code</h1>
         <p class="muted">Each snippet has one faulty line. Click it. ${Object.keys(s).length} of ${C.clinic.length} fixed.</p>
         <div class="grid">${C.clinic.map((c, i) => `
           <button class="card tcard clin ${s[i] ? 'fixed' : ''}" data-i="${i}">
@@ -270,7 +270,7 @@
   // ---------- study guide ----------
   function guide(sel) {
     app.innerHTML = `
-      <h1>Study guide</h1>
+      <h1>Lessons</h1>
       <p class="muted">Short, practical notes per domain. Claude Code details follow the official docs, so check the linked page when versions matter.</p>
       ${C.guide.map((g) => `
         <details class="card" id="g-${g.d}" ${sel === g.d ? 'open' : ''}>
@@ -286,7 +286,7 @@
   // ---------- field notes ----------
   function notes() {
     app.innerHTML = `
-      <div class="row spread"><h1>Field notes</h1><button class="btn ghost noprint" id="print">Print</button></div>
+      <div class="row spread"><h1>Quick Reference</h1><button class="btn ghost noprint" id="print">Print</button></div>
       ${C.domains.map((d) => `
         <h2>${esc(d.name)}</h2>
         <div class="cheats">${C.cheatsheet.filter((c) => c.d === d.key).map((c) => `
@@ -297,7 +297,7 @@
   // ---------- pitfalls ----------
   function pitfalls() {
     app.innerHTML = `
-      <h1>Pitfalls</h1>
+      <h1>Common Mistakes</h1>
       <p class="muted">Habits that look reasonable but lose points. Each has a better default.</p>
       ${C.antipatterns.map((a, i) => `
         <div class="card ap"><span class="pill">${i + 1}</span><strong>${esc(a.bad)}</strong>
@@ -308,7 +308,7 @@
   function sim() {
     const best = load().mock;
     app.innerHTML = `
-      <h1>Full simulation</h1>
+      <h1>Mock Exam</h1>
       <div class="card">
         <p>A timed, exam-mode run. Questions are drawn across all sets and weighted by domain, and answers are revealed only at the end.</p>
         <div class="row">
@@ -320,7 +320,7 @@
       </div>`;
     $('go').addEventListener('click', () => {
       const qs = pickMock(Number($('mq').value));
-      start({ id: '__mock', title: `Full simulation (${qs.length} questions)`, questions: qs }, true,
+      start({ id: '__mock', title: `Mock Exam (${qs.length} questions)`, questions: qs }, true,
         { mode: 'exam', shufOpts: true, shufQs: true, minutes: Number($('mt').value) });
     });
   }
@@ -335,7 +335,7 @@
     const o = C.overview, p = load(), done = p.plan || {};
     const totalItems = C.plan.reduce((n, w) => n + w.items.length, 0), got = Object.keys(done).length;
     app.innerHTML = `
-      <h1>Exam facts & study plan</h1>
+      <h1>Exam Info & 2-Week Plan</h1>
       <div class="card"><table>${o.facts.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</table>
         <p class="muted small">${esc(o.note)}</p></div>
       <h2>Typical scenarios</h2>
@@ -359,7 +359,7 @@
     C.guide.forEach((g) => g.points.forEach((x) => out.push({ t: strip(x).slice(0, 90), s: domainName(g.d), r: 'guide/' + g.d, k: 'Guide' })));
     C.cheatsheet.forEach((c) => out.push({ t: c.title, s: strip(c.body), r: 'notes', k: 'Notes' }));
     C.flashcards.forEach((c) => out.push({ t: strip(c.front), s: strip(c.back), r: 'recall', k: 'Recall' }));
-    C.antipatterns.forEach((a) => out.push({ t: a.bad, s: strip(a.why + ' ' + a.fix), r: 'pitfalls', k: 'Pitfall' }));
+    C.antipatterns.forEach((a) => out.push({ t: a.bad, s: strip(a.why + ' ' + a.fix), r: 'pitfalls', k: 'Common Mistake' }));
     C.clinic.forEach((c) => out.push({ t: c.title, s: strip(c.why), r: 'clinic', k: 'Clinic' }));
     all.forEach((x) => out.push({ t: strip(x.q.question).slice(0, 110), s: x.d, r: 'quiz', k: 'Question' }));
     out.forEach((e) => { e.h = (e.t + ' ' + e.s).toLowerCase(); });
@@ -375,7 +375,7 @@
   }
   const box = document.createElement('div');
   box.className = 'searchbox'; box.hidden = true;
-  box.innerHTML = '<div class="sb-panel" role="dialog" aria-label="Search"><input id="sbq" type="search" placeholder="Search notes, cards, pitfalls, questions…" autocomplete="off"><ul id="sbr"></ul><p class="muted small">Enter opens the first result · Esc closes</p></div>';
+  box.innerHTML = '<div class="sb-panel" role="dialog" aria-label="Search"><input id="sbq" type="search" placeholder="Search notes, cards, mistakes, questions…" autocomplete="off"><ul id="sbr"></ul><p class="muted small">Enter opens the first result · Esc closes</p></div>';
   document.body.appendChild(box);
   function openSearch() { box.hidden = false; $('sbq').value = ''; $('sbr').innerHTML = ''; $('sbq').focus(); }
   function closeSearch() { box.hidden = true; }
@@ -394,9 +394,9 @@
 
   // ---------- router ----------
   const routes = {
-    '': [dashboard, 'Dashboard'], guide: [guide, 'Study guide'], notes: [notes, 'Field notes'], pitfalls: [pitfalls, 'Pitfalls'],
-    quiz: [quizHome, 'Quiz sets'], sim: [sim, 'Full simulation'], weak: [weak, 'Weak-spot Trainer'], daily: [daily, 'Daily 5'],
-    recall: [recall, 'Recall Deck'], clinic: [clinic, 'Code Clinic'], plan: [plan, 'Exam facts and study plan']
+    '': [dashboard, 'Home'], guide: [guide, 'Lessons'], notes: [notes, 'Quick Reference'], pitfalls: [pitfalls, 'Common Mistakes'],
+    quiz: [quizHome, 'Practice Tests'], sim: [sim, 'Mock Exam'], weak: [weak, 'Fix My Weak Areas'], daily: [daily, 'Daily Practice'],
+    recall: [recall, 'Flashcards'], clinic: [clinic, 'Fix the Code'], plan: [plan, 'Exam Info and 2-Week Plan']
   };
   const alias = { overview: 'plan', cheatsheet: 'notes', antipatterns: 'pitfalls', mock: 'sim', flashcards: 'recall' };
   function route() {
