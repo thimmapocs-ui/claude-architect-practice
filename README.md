@@ -19,6 +19,17 @@ answers are wrong.
 - Best and last scores saved in the browser's localStorage. No backend, no tracking.
 - Pure static HTML/CSS/JS. You can open `index.html` directly from disk.
 
+## Study tools
+- **Landing page** with navigation, stats and domain cards
+- **Quiz**: 8 sets, practice or exam mode
+- **Mock exam**: timed, 30 or 60 questions drawn by domain weight, with a per-domain breakdown
+- **Flashcards**: flip cards, domain filter, shuffle, keyboard control (Space, arrows)
+- **Cheat sheet**: one-page reference per domain, printable
+- **Anti-patterns**: common wrong-answer habits and better defaults
+- **Study guide** and **Overview** with a 6-week plan
+
+Exam facts (question count, pass mark, domain weights) are community-reported and unofficial. Claude Code details follow https://code.claude.com/docs.
+
 ## Run locally
 Open `index.html` in a browser, or run:
 ```bash
